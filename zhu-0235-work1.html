@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>带历史记录的搜索网站</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, sans-serif;
+        }
+
+        /* 搜索页面 */
+        .search-page {
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 120px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 40px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+
+        #search-input {
+            width: 340px;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+        }
+        #search-input:focus {
+            border-color: #4285f4;
+        }
+
+        #search-btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            background-color: #4285f4;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #search-btn:hover {
+            background-color: #2b6cd9;
+        }
+        /* 点击时变色 */
+        #search-btn:active {
+            background-color: #1a4b9c;
+        }
+
+        .history-title {
+            font-size: 16px;
+            color: #555;
+            margin-bottom:10px;
+        }
+        .history-item {
+            padding:8px 14px;
+            background:#fff;
+            border:1px solid #ddd;
+            border-radius:6px;
+            cursor:pointer;
+            transition: background 0.2s;
+        }
+        .history-item:hover{
+            background:#eef5ff;
+        }
+
+        /* 蓝天白云风景页面，默认隐藏 */
+        .scene-page {
+            display: none;
+            width:100%;
+            height:100vh;
+            overflow:hidden;
+        }
+        .back-btn{
+            position:absolute;
+            top:20px;
+            left:20px;
+            z-index:99;
+            padding:10px 18px;
+            border:none;
+            border-radius:8px;
+            background:#333;
+            color:white;
+            font-size:16px;
+            cursor:pointer;
+        }
+        .back-btn:active{
+            background:#111;
+        }
+
+        /* 天空 */
+        .sky {
+            width: 100%;
+            height: 65vh;
+            background: linear-gradient(#87CEEB, #B0E0FF);
+            position: relative;
+        }
+        /* 静态云朵 */
+        .cloud {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow:
+                40px 0 0 10px white,
+                80px 0 0 20px white,
+                -40px 0 0 15px white,
+                20px -20px 0 15px white,
+                60px -20px 0 15px white;
+            width: 80px;
+            height: 40px;
+            cursor: pointer;
+            transition: transform 1s ease-in-out;
+        }
+        .cloud1 {
+            top: 80px;
+            left: 15%;
+        }
+        .cloud2 {
+            top: 120px;
+            left: 50%;
+            width: 60px;
+            height: 30px;
+        }
+        .cloud3 {
+            top: 40px;
+            left: 75%;
+            width: 100px;
+            height: 50px;
+        }
+        /* 草地 */
+        .grass {
+            width: 100%;
+            height: 35vh;
+            background: linear-gradient(#56b840, #3a8c2b);
+        }
+    </style>
+</head>
+<body>
+    <!-- 搜索界面 -->
+    <div class="search-page" id="searchPage">
+        <h1>我的搜索</h1>
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="输入搜索内容...">
+            <button id="search-btn">搜索</button>
+        </div>
+        <div class="history-title">搜索历史：</div>
+        <div class="history-item" id="history-cloud">蓝天白云</div>
+    </div>
+
+    <!-- 蓝天白云风景界面（初始隐藏） -->
+    <div class="scene-page" id="scenePage">
+        <button class="back-btn" id="backBtn">← 返回</button>
+        <div class="sky">
+            <div class="cloud cloud1"></div>
+            <div class="cloud cloud2"></div>
+            <div class="cloud cloud3"></div>
+        </div>
+        <div class="grass"></div>
+    </div>
+
+<script>
+    const searchPage = document.getElementById('searchPage');
+    const scenePage = document.getElementById('scenePage');
+    const backBtn = document.getElementById('backBtn');
+    const historyCloud = document.getElementById('history-cloud');
+    const searchBtn = document.getElementById('search-btn');
+    const input = document.getElementById('search-input');
+
+    // 点击历史记录【蓝天白云】跳转到风景画
+    historyCloud.addEventListener('click', ()=>{
+        searchPage.style.display = 'none';
+        scenePage.style.display = 'block';
+    })
+
+    // 返回按钮，回到搜索页
+    backBtn.addEventListener('click', ()=>{
+        scenePage.style.display = 'none';
+        searchPage.style.display = 'flex';
+    })
+
+    // 搜索按钮功能
+    searchBtn.addEventListener('click', ()=>{
+        const keyword = input.value.trim();
+        if(keyword === ""){
+            alert("请输入搜索关键词");
+        }else if(keyword === "蓝天白云"){
+            searchPage.style.display = 'none';
+            scenePage.style.display = 'block';
+        }else{
+            alert(`搜索内容：${keyword}`);
+        }
+    })
+
+    // 回车搜索
+    input.addEventListener('keydown', function(e){
+        if(e.key === 'Enter'){
+            searchBtn.click();
+        }
+    })
+
+    // 点击云朵，云朵飘动1秒后停止
+    const clouds = document.querySelectorAll('.cloud');
+    clouds.forEach(cloud => {
+        cloud.addEventListener('click', function() {
+            if (this.isMoving) return;
+            this.isMoving = true;
+            this.style.transform = 'translateX(150px)';
+            setTimeout(() => {
+                this.isMoving = false;
+            }, 1000);
+        })
+    })
+</script>
+</body>
+</html>
